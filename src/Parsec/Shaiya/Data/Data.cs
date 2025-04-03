@@ -12,12 +12,12 @@ public class Data
 
     public Data(string sahPath, string safPath)
     {
-        if (!FileHelper.FileExists(sahPath))
+        if (!File.Exists(sahPath))
         {
             throw new FileNotFoundException($"data.sah file not found at {sahPath}");
         }
 
-        if (!FileHelper.FileExists(safPath))
+        if (!File.Exists(safPath))
         {
             throw new FileNotFoundException($"data.saf file not found at {safPath}");
         }
@@ -66,7 +66,8 @@ public class Data
     /// <param name="path">Folder path</param>
     public SDirectory? GetFolder(string path)
     {
-        DirectoryIndex.TryGetValue(path, out var folder);
+        var normalizedPath = PathHelper.Normalize(path);
+        DirectoryIndex.TryGetValue(normalizedPath, out var folder);
         return folder;
     }
 
@@ -76,7 +77,8 @@ public class Data
     /// <param name="path">File path</param>
     public SFile? GetFile(string path)
     {
-        FileIndex.TryGetValue(path, out var file);
+        var normalizedPath = PathHelper.Normalize(path);
+        FileIndex.TryGetValue(normalizedPath, out var file);
         return file;
     }
 
@@ -134,12 +136,14 @@ public class Data
     /// <param name="path"></param>
     public void RemoveFile(string path)
     {
-        if (!FileIndex.TryGetValue(path, out var file))
+        var normalizedPath = PathHelper.Normalize(path);
+
+        if (!FileIndex.TryGetValue(normalizedPath, out var file))
             return;
 
         Sah.FileCount--;
         file.ParentDirectory.Files.Remove(file);
-        FileIndex.Remove(path);
+        FileIndex.Remove(normalizedPath);
 
         Saf.ClearBytes(file.Offset, file.Length);
     }
@@ -152,7 +156,10 @@ public class Data
     {
         var filePaths = File.ReadAllLines(lstPath);
 
-        foreach (var file in filePaths)
-            RemoveFile(file);
+        foreach (var filePath in filePaths)
+        {
+            var normalizedPath = PathHelper.Normalize(filePath);
+            RemoveFile(normalizedPath);
+        }
     }
 }

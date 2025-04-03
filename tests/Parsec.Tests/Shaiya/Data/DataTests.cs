@@ -111,7 +111,9 @@ public class DataTests
 
         // Check that patch files are present in the data
         foreach (var patchFile in patchFiles)
+        {
             Assert.True(data.FileIndex.ContainsKey(patchFile));
+        }
     }
 
     [Fact]

@@ -5,12 +5,6 @@ namespace Parsec.Helpers;
 public static class FileHelper
 {
     /// <summary>
-    /// Check if a file exists.
-    /// </summary>
-    /// <param name="path">Path to the file to check</param>
-    public static bool FileExists(string path) => File.Exists(path);
-
-    /// <summary>
     /// Writes a file to the file system.
     /// </summary>
     /// <param name="path">File path</param>
@@ -21,7 +15,7 @@ public static class FileHelper
     {
         encoding ??= Encoding.ASCII;
 
-        if (backupIfExists && FileExists(path))
+        if (backupIfExists && File.Exists(path))
         {
             DeleteFile($"{path}.bak");
             RenameFile(path, $"{path}.bak");
@@ -54,7 +48,7 @@ public static class FileHelper
     /// <param name="backupIfExists">Makes a backup of the file if it already existed</param>
     public static bool WriteFile(string path, IEnumerable<byte> data, bool backupIfExists = false)
     {
-        if (backupIfExists && FileExists(path))
+        if (backupIfExists && File.Exists(path))
         {
             DeleteFile($"{path}.bak");
             RenameFile(path, $"{path}.bak");
@@ -86,7 +80,7 @@ public static class FileHelper
     /// <param name="path">Path of the file to delete</param>
     public static void DeleteFile(string path)
     {
-        if (FileExists(path))
+        if (File.Exists(path))
         {
             File.Delete(path);
         }
@@ -99,7 +93,7 @@ public static class FileHelper
     /// <param name="newPath">New file path</param>
     public static void RenameFile(string originalPath, string newPath)
     {
-        if (FileExists(originalPath))
+        if (File.Exists(originalPath))
         {
             File.Move(originalPath, newPath);
         }
@@ -153,7 +147,7 @@ public static class FileHelper
     /// <param name="filePath">Path to file</param>
     public static byte[] ReadBytes(string filePath)
     {
-        if (!FileExists(filePath))
+        if (!File.Exists(filePath))
             throw new FileNotFoundException($"File {filePath} not found.");
 
         return File.ReadAllBytes(filePath);

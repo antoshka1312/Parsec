@@ -3,7 +3,6 @@ using System.Text;
 using Newtonsoft.Json;
 using Parsec.Common;
 using Parsec.Extensions;
-using Parsec.Helpers;
 using Parsec.Serialization;
 using Parsec.Shaiya.Core;
 using Parsec.Shaiya.Data;
@@ -155,7 +154,7 @@ public static class ParsecReader
         if (!type.GetBaseClassesAndInterfaces().Contains(typeof(FileBase)))
             throw new ArgumentException("Type must be a child of FileBase");
 
-        if (!FileHelper.FileExists(path))
+        if (!File.Exists(path))
             throw new FileNotFoundException($"File ${path} not found");
 
         if (Path.GetExtension(path) != ".json")

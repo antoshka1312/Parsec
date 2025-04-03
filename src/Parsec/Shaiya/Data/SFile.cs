@@ -1,5 +1,6 @@
 ﻿using System.Runtime.Serialization;
 using Newtonsoft.Json;
+using Parsec.Helpers;
 using Parsec.Serialization;
 
 namespace Parsec.Shaiya.Data;
@@ -32,7 +33,9 @@ public sealed class SFile
         Version = binaryReader.ReadInt32();
 
         if (!fileIndex.ContainsKey(RelativePath))
+        {
             fileIndex.Add(RelativePath, this);
+        }
     }
 
     /// <summary>
@@ -62,7 +65,7 @@ public sealed class SFile
     /// <summary>
     /// The relative path to the file
     /// </summary>
-    public string RelativePath => string.IsNullOrEmpty(ParentDirectory.Name) ? Name : Path.Combine(ParentDirectory.RelativePath, Name);
+    public string RelativePath => string.IsNullOrEmpty(ParentDirectory.Name) ? Name : PathHelper.Normalize(Path.Combine(ParentDirectory.RelativePath, Name));
 
     /// <summary>
     /// The directory in which the file is

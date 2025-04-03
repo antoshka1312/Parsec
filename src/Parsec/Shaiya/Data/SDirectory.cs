@@ -1,5 +1,6 @@
 ﻿using System.Runtime.Serialization;
 using Newtonsoft.Json;
+using Parsec.Helpers;
 using Parsec.Serialization;
 
 namespace Parsec.Shaiya.Data;
@@ -70,9 +71,10 @@ public sealed class SDirectory
     /// <summary>
     /// The relative path to the folder
     /// </summary>
-    public string RelativePath => ParentDirectory == null || string.IsNullOrEmpty(ParentDirectory.Name)
-        ? Name
-        : Path.Combine(ParentDirectory.RelativePath, Name);
+    public string RelativePath =>
+        ParentDirectory == null || string.IsNullOrEmpty(ParentDirectory.Name)
+            ? Name
+            : PathHelper.Normalize(Path.Combine(ParentDirectory.RelativePath, Name));
 
     /// <summary>
     /// List of files the folder has

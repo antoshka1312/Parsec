@@ -1,5 +1,6 @@
 ﻿using System.Runtime.Serialization;
 using Newtonsoft.Json;
+using Parsec.Helpers;
 using Parsec.Serialization;
 using Parsec.Shaiya.Core;
 
@@ -114,10 +115,13 @@ public sealed class Sah : FileBase
     /// <param name="path">Folder path</param>
     public SDirectory EnsureFolderExists(string path)
     {
-        if (DirectoryIndex.TryGetValue(path, out var matchingFolder))
+        var normalizedPath = PathHelper.Normalize(path);
+
+        if (DirectoryIndex.TryGetValue(normalizedPath, out var matchingFolder))
             return matchingFolder;
 
-        var pathFolders = path.Split('/').ToList();
+        var pathFolders = PathHelper.Split(normalizedPath);
+
         var currentFolder = RootDirectory;
 
         foreach (var folderName in pathFolders)
@@ -143,13 +147,13 @@ public sealed class Sah : FileBase
     /// Checks if the sah has a folder with the given path
     /// </summary>
     /// <param name="relativePath">Folder's relative path (ie. "Character/Human")</param>
-    public bool HasFolder(string relativePath) => DirectoryIndex.ContainsKey(relativePath);
+    public bool HasFolder(string relativePath) => DirectoryIndex.ContainsKey(PathHelper.Normalize(relativePath));
 
     /// <summary>
     /// Checks if the sah has a file with the given path
     /// </summary>
     /// <param name="relativePath">File's relative path (ie. "Character/Human/3DC/model.3DC")</param>
-    public bool HasFile(string relativePath) => FileIndex.ContainsKey(relativePath);
+    public bool HasFile(string relativePath) => FileIndex.ContainsKey(PathHelper.Normalize(relativePath));
 
     protected override void Write(SBinaryWriter binaryWriter)
     {
