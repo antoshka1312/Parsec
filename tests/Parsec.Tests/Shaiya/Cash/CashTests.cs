@@ -1,4 +1,8 @@
-﻿using System.Linq;
+﻿using System.IO;
+using System.Linq;
+using Parsec.Common;
+using Parsec.Extensions;
+using Parsec.Serialization;
 using Parsec.Shaiya.Cash;
 
 namespace Parsec.Tests.Shaiya.Cash;
@@ -38,7 +42,30 @@ public class CashTests
         var expected = dbItemSell.GetBytes().ToList();
         Assert.Equal(expected, outputDbItemSell.GetBytes());
         Assert.Equal(expected, jsonDbItemSell.GetBytes());
-        // For the csv check, skip the 128-byte header, which gets lost in the process
-        Assert.Equal(expected.Skip(128), csvItemSell.GetBytes().Skip(128));
+
+        // DbItemSell doesn't seem to follow the casing conventions of the other formats so, since the field names get assigned based on the
+        // property names, the csv field names may not be the same as the original SData field names.
+        // This is why only record values are tested here.
+        var itemSellMemoryStream = new MemoryStream();
+        var csvItemSellMemoryStream = new MemoryStream();
+        var serializationOptions = new BinarySerializationOptions
+        {
+            Episode = Episode.EP8
+        };
+
+        var dbItemSellBinaryWriter = new SBinaryWriter(itemSellMemoryStream, serializationOptions);
+        var csvItemSellBinaryWriter = new SBinaryWriter(csvItemSellMemoryStream, serializationOptions);
+
+        foreach (var record in dbItemSell.Records.ToSerializable())
+        {
+            record.Write(dbItemSellBinaryWriter);
+        }
+
+        foreach (var record in csvItemSell.Records.ToSerializable())
+        {
+            record.Write(csvItemSellBinaryWriter);
+        }
+
+        Assert.Equal(itemSellMemoryStream.GetBuffer(), csvItemSellMemoryStream.GetBuffer());
     }
 }

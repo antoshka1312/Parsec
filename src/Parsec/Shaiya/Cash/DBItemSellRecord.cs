@@ -5,7 +5,7 @@ namespace Parsec.Shaiya.Cash;
 
 public sealed class DBItemSellRecord : IBinarySDataRecord
 {
-    public long ProductCode { get; set; }
+    public string ProductCode { get; set; } = string.Empty;
 
     public long Goods_Id { get; set; }
 
@@ -111,9 +111,13 @@ public sealed class DBItemSellRecord : IBinarySDataRecord
 
     public long Type { get; set; }
 
+    public long Icon { get; set; }
+
     public void Read(SBinaryReader binaryReader)
     {
-        ProductCode = binaryReader.ReadInt64();
+        var binaryCodeLength = binaryReader.ReadByte();
+        ProductCode = binaryReader.ReadString(binaryCodeLength);
+
         Goods_Id = binaryReader.ReadInt64();
         Multi_BuyCost1 = binaryReader.ReadInt64();
         Multi_BuyCost2 = binaryReader.ReadInt64();
@@ -166,11 +170,14 @@ public sealed class DBItemSellRecord : IBinarySDataRecord
         ItemID24 = binaryReader.ReadInt64();
         ItemCount24 = binaryReader.ReadInt64();
         Type = binaryReader.ReadInt64();
+        Icon = binaryReader.ReadInt64();
     }
 
     public void Write(SBinaryWriter binaryWriter)
     {
-        binaryWriter.Write(ProductCode);
+        binaryWriter.Write((byte)ProductCode.Length);
+        binaryWriter.Write(ProductCode, isLengthPrefixed: false, includeStringTerminator: false);
+
         binaryWriter.Write(Goods_Id);
         binaryWriter.Write(Multi_BuyCost1);
         binaryWriter.Write(Multi_BuyCost2);
@@ -223,5 +230,6 @@ public sealed class DBItemSellRecord : IBinarySDataRecord
         binaryWriter.Write(ItemID24);
         binaryWriter.Write(ItemCount24);
         binaryWriter.Write(Type);
+        binaryWriter.Write(Icon);
     }
 }
