@@ -11,7 +11,7 @@ public class Dg : FileBase
 
     public List<String256> TextureNames { get; set; } = new();
 
-    public int UnknownInt32 { get; set; }
+    public int LightmapCount { get; set; }
 
     public DgNode RootNode { get; set; } = new();
 
@@ -21,7 +21,7 @@ public class Dg : FileBase
     {
         BoundingBox = binaryReader.Read<BoundingBox>();
         TextureNames = binaryReader.ReadList<String256>().ToList();
-        UnknownInt32 = binaryReader.ReadInt32();
+        LightmapCount = binaryReader.ReadInt32();
 
         var value = binaryReader.ReadInt32();
 
@@ -35,7 +35,7 @@ public class Dg : FileBase
     {
         binaryWriter.Write(BoundingBox);
         binaryWriter.Write(TextureNames.ToSerializable());
-        binaryWriter.Write(UnknownInt32);
+        binaryWriter.Write(LightmapCount);
 
         binaryWriter.Write(1);
         binaryWriter.Write(RootNode);

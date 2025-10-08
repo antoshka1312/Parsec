@@ -7,7 +7,7 @@ namespace Parsec.Shaiya.Dg;
 
 public class DgMesh : ISerializable
 {
-    public AlphaBlendingMode AlphaBlendingMode { get; set; }
+    public int LightmapIndex { get; set; }
 
     public List<DgMeshVertex> Vertices { get; set; } = new();
 
@@ -15,14 +15,14 @@ public class DgMesh : ISerializable
 
     public void Read(SBinaryReader binaryReader)
     {
-        AlphaBlendingMode = (AlphaBlendingMode)binaryReader.ReadInt32();
+        LightmapIndex = binaryReader.ReadInt32();
         Vertices = binaryReader.ReadList<DgMeshVertex>().ToList();
         Faces = binaryReader.ReadList<MeshFace>().ToList();
     }
 
     public void Write(SBinaryWriter binaryWriter)
     {
-        binaryWriter.Write((int)AlphaBlendingMode);
+        binaryWriter.Write(LightmapIndex);
         binaryWriter.Write(Vertices.ToSerializable());
         binaryWriter.Write(Faces.ToSerializable());
     }
