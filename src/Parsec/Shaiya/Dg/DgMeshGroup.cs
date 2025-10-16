@@ -4,7 +4,7 @@ using Parsec.Shaiya.Core;
 
 namespace Parsec.Shaiya.Dg;
 
-public class DgObject : ISerializable
+public class DgMeshGroup : ISerializable
 {
     public int TextureIndex { get; set; }
 

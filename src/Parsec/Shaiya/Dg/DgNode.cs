@@ -15,7 +15,7 @@ public class DgNode : ISerializable
 
     public BoundingBox CollisionBox { get; set; }
 
-    public List<DgObject> Objects { get; set; } = new();
+    public List<DgMeshGroup> MeshGroups { get; set; } = new();
 
     public DgMeshCollisionType CollisionType { get; set; }
 
@@ -29,7 +29,7 @@ public class DgNode : ISerializable
         ViewBox = binaryReader.Read<BoundingBox>();
         CollisionBox = binaryReader.Read<BoundingBox>();
 
-        Objects = binaryReader.ReadList<DgObject>().ToList();
+        MeshGroups = binaryReader.ReadList<DgMeshGroup>().ToList();
 
         CollisionType = (DgMeshCollisionType)binaryReader.ReadInt32();
 
@@ -56,7 +56,7 @@ public class DgNode : ISerializable
         binaryWriter.Write(Center);
         binaryWriter.Write(ViewBox);
         binaryWriter.Write(CollisionBox);
-        binaryWriter.Write(Objects.ToSerializable());
+        binaryWriter.Write(MeshGroups.ToSerializable());
         binaryWriter.Write((int)CollisionType);
 
         if (CollisionType == DgMeshCollisionType.Collision)
